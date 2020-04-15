@@ -1,0 +1,59 @@
+<html>
+<head>
+ <title>Rugby maps!</title>
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"/>
+ <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+ <script type="text/javascript" src="rugbymaps.geojson"></script>
+ <style>
+  #map{ height: 100% }
+ </style>
+</head>
+
+<body>
+ <div id="map"></div>
+ <script>
+
+  // initialize the map
+  var map = L.map('map').setView([41.7, 2], 8);
+
+  // load a Carto tile layer
+  var cartoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', 
+    {
+	 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	 subdomains: 'abcd',
+	 maxZoom: 19
+    });
+  cartoLayer.addTo(map)
+ 
+  // point style
+  var geojsonMarkerOptions = 
+    {
+     radius: 4,
+     fillColor: "#ff7800",
+     color: "#000",
+     weight: 1,
+     opacity: 1,
+     fillOpacity: 0.9
+    };
+
+  // load GeoJSON from an external file
+  var equip = L.geoJson(equipos, 
+   {
+     pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+     },
+	
+  // pop-up
+	onEachFeature: function(feature, layer) {
+    layer.bindPopup(feature.properties.nom_equipo + '</br>' + 
+	                feature.properties.div +'</br>' + 
+					feature.properties.ciudad + '</br>' +
+                    feature.properties.provincia);
+    }
+	}).addTo(map);
+	
+	  
+   
+</script>
+</body>
+</html>
